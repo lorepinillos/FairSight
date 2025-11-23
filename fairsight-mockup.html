@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FairSight - Recruitment Decision Support Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f6f8;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #d8dce6;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0f3d7a;
+            letter-spacing: -0.3px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 0.3rem;
+            transition: all 0.25s ease;
+        }
+
+        .nav-links a:hover {
+            color: #0f3d7a;
+            border-bottom-color: #0f3d7a;
+        }
+
+        .nav-links a.active {
+            color: #0f3d7a;
+            border-bottom-color: #0f3d7a;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #e0e7ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f3d7a;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 70px);
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: #ffffff;
+            border-right: 1px solid #d8dce6;
+            padding: 1.5rem 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-section {
+            padding: 0 1rem 1.75rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 0.75rem;
+            padding: 0 0.5rem;
+        }
+
+        .sidebar-item {
+            padding: 0.8rem 0.75rem;
+            border-radius: 4px;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f3f4f6;
+            color: #0f3d7a;
+        }
+
+        .sidebar-item.active {
+            background-color: #ede9fe;
+            color: #0f3d7a;
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #d8dce6;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toolbar-left {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 0.65rem 1rem;
+            width: 300px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+
+        .search-box input::placeholder {
+            color: #a0aec0;
+        }
+
+        .filter-button {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            padding: 0.65rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .filter-button:hover {
+            border-color: #0f3d7a;
+            color: #0f3d7a;
+            background-color: #f0f4ff;
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .detail-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            overflow-y: auto;
+        }
+
+        .detail-header {
+            padding: 2rem;
+            border-bottom: 1px solid #d8dce6;
+            background-color: #fafbfc;
+        }
+
+        .detail-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-subtitle {
+            font-size: 0.95rem;
+            color: #6b7280;
+        }
+
+        .detail-content {
+            padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background-color: #fafbfc;
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .dashboard-card:hover {
+            border-color: #d8dce6;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .dashboard-card-label {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+
+        .dashboard-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f3d7a;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-card-change {
+            font-size: 0.85rem;
+            color: #059669;
+            font-weight: 500;
+        }
+
+        .dashboard-card-change.negative {
+            color: #dc2626;
+        }
+
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .compliance-item {
+            background-color: #fafbfc;
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 5px;
+        }
+
+        .compliance-item-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .compliance-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .compliance-status.compliant {
+            background-color: #059669;
+        }
+
+        .compliance-status.warning {
+            background-color: #f59e0b;
+        }
+
+        .compliance-status.critical {
+            background-color: #dc2626;
+        }
+
+        .compliance-list {
+            list-style: none;
+        }
+
+        .compliance-list-item {
+            padding: 0.75rem 0;
+            font-size: 0.9rem;
+            color: #6b7280;
+            display: flex;
+            gap: 0.75rem;
+            border-bottom: 1px solid #f0f1f3;
+        }
+
+        .compliance-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .compliance-check {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #ffffff;
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+        }
+
+        .compliance-check.pass {
+            background-color: #059669;
+        }
+
+        .compliance-check.fail {
+            background-color: #dc2626;
+        }
+
+        .metric-box {
+            background-color: #fafbfc;
+            border: 1px solid #e5e7eb;
+            padding: 1.2rem;
+            border-radius: 5px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .metric-box:hover {
+            border-color: #d8dce6;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0f3d7a;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chart-container {
+            background-color: #fafbfc;
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+        }
+
+        .bar-chart {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 1rem 0;
+            gap: 1rem;
+        }
+
+        .bar {
+            flex: 1;
+            background-color: #0f3d7a;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            min-height: 20px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .bar.medium {
+            background-color: #f59e0b;
+        }
+
+        .bar.low {
+            background-color: #dc2626;
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -30px;
+            font-size: 0.8rem;
+            color: #6b7280;
+            width: 100%;
+            text-align: center;
+        }
+
+        .bar-value {
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            background-color: #e5e7eb;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #0f3d7a;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .audit-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fafbfc;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .audit-table thead {
+            background-color: #f3f4f6;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .audit-table th {
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .audit-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f1f3;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+
+        .audit-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .audit-table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            background-color: #ede9fe;
+            color: #0f3d7a;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge.warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.success {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .badge.critical {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge.info {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: 1px solid #e5e7eb;
+            background-color: #ffffff;
+            color: #2c3e50;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            border-color: #0f3d7a;
+            color: #0f3d7a;
+            background-color: #f0f4ff;
+        }
+
+        .btn-primary {
+            background-color: #0f3d7a;
+            color: #ffffff;
+            border-color: #0f3d7a;
+        }
+
+        .btn-primary:hover {
+            background-color: #0a2d5a;
+            border-color: #0a2d5a;
+        }
+
+        .btn-success {
+            background-color: #059669;
+            color: #ffffff;
+            border-color: #059669;
+        }
+
+        .btn-success:hover {
+            background-color: #047857;
+            border-color: #047857;
+        }
+
+        .page {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        .timestamp {
+            color: #9ca3af;
+            font-size: 0.85rem;
+        }
+
+        .risk-item {
+            background-color: #fafbfc;
+            border-left: 4px solid #0f3d7a;
+            padding: 1.2rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .risk-item.warning {
+            border-left-color: #f59e0b;
+            background-color: #fffbf0;
+        }
+
+        .risk-item.critical {
+            border-left-color: #dc2626;
+            background-color: #fff5f5;
+        }
+
+        .risk-item-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-item-description {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 0.75rem;
+        }
+
+        .risk-item-mitigation {
+            font-size: 0.9rem;
+            color: #059669;
+            font-weight: 500;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #f3f4f6 0%, #fafbfc 100%);
+            border: 1px dashed #d8dce6;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 0.95rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0;
+        }
+
+        .tab {
+            padding: 1rem 0;
+            color: #6b7280;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .tab:hover {
+            color: #0f3d7a;
+        }
+
+        .tab.active {
+            color: #0f3d7a;
+            border-bottom-color: #0f3d7a;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .modal-text {
+            font-size: 0.95rem;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 1400px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stakeholder-card {
+            background-color: #fafbfc;
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+        }
+
+        .stakeholder-role {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.75rem;
+        }
+
+        .stakeholder-responsibilities {
+            font-size: 0.9rem;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .doc-section {
+            background-color: #fafbfc;
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+        }
+
+        .doc-section-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .doc-list {
+            list-style: none;
+        }
+
+        .doc-list-item {
+            padding: 0.75rem 0;
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+            border-bottom: 1px solid #f0f1f3;
+        }
+
+        .doc-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .doc-icon {
+            color: #0f3d7a;
+            font-weight: 700;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #bfdbfe;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">FairSight</div>
+        <div class="header-controls">
+            <ul class="nav-links">
+                <li><a href="javascript:void(0)" onclick="navigateToPage('dashboard')" class="active">Dashboard</a></li>
+                <li><a href="javascript:void(0)" onclick="navigateToPage('candidates')">Candidates</a></li>
+                <li><a href="javascript:void(0)" onclick="navigateToPage('fairness')">Fairness Monitor</a></li>
+                <li><a href="javascript:void(0)" onclick="navigateToPage('risk')">Risk Management</a></li>
+                <li><a href="javascript:void(0)" onclick="navigateToPage('compliance')">Compliance</a></li>
+                <li><a href="javascript:void(0)" onclick="navigateToPage('settings')">Settings</a></li>
+            </ul>
+            <div class="user-info">
+                <span>Sarah Mueller</span>
+                <div class="avatar">SM</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Primary</div>
+                <div class="sidebar-item active" onclick="navigateToPage('dashboard')">
+                    <span>▮</span> Dashboard
+                </div>
+                <div class="sidebar-item" onclick="navigateToPage('candidates')">
+                    <span>▮</span> Candidates
+                </div>
+                <div class="sidebar-item" onclick="navigateToPage('fairness')">
+                    <span>▮</span> Fairness Monitor
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Management</div>
+                <div class="sidebar-item" onclick="navigateToPage('risk')">
+                    <span>▮</span> Risk Management
+                </div>
+                <div class="sidebar-item" onclick="navigateToPage('model')">
+                    <span>▮</span> Model Management
+                </div>
+                <div class="sidebar-item" onclick="navigateToPage('stakeholders')">
+                    <span>▮</span> Stakeholders
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Governance</div>
+                <div class="sidebar-item" onclick="navigateToPage('compliance')">
+                    <span>▮</span> Compliance
+                </div>
+                <div class="sidebar-item" onclick="navigateToPage('audits')">
+                    <span>▮</span> Audit Logs
+                </div>
+                <div class="sidebar-item" onclick="navigateToPage('documentation')">
+                    <span>▮</span> Documentation
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <!-- DASHBOARD PAGE -->
+            <div id="dashboard-page" class="page active">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button class="filter-button">Time Range: Last 30 Days</button>
+                        <button class="filter-button">Organization: All</button>
+                    </div>
+                    <div>
+                        <button class="btn" onclick="showModal('export')">Export Dashboard</button>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div class="detail-title">Platform Overview</div>
+                        <div class="detail-subtitle">System health, performance, and compliance status across all deployments</div>
+                    </div>
+
+                    <div class="detail-content">
+                        <div class="section">
+                            <div class="section-title">Key Performance Indicators</div>
+                            <div class="dashboard-grid">
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">Active Assessments</div>
+                                    <div class="dashboard-card-value">847</div>
+                                    <div class="dashboard-card-change">+12% from last month</div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">Average Quality Score</div>
+                                    <div class="dashboard-card-value">87.3</div>
+                                    <div class="dashboard-card-change">+2.1% improvement</div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">Fairness Index</div>
+                                    <div class="dashboard-card-value">94.2</div>
+                                    <div class="dashboard-card-change">Stable</div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">System Uptime</div>
+                                    <div class="dashboard-card-value">99.97%</div>
+                                    <div class="dashboard-card-change">SLA Target: 99.9%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Compliance Status</div>
+                            <div class="compliance-grid">
+                                <div class="compliance-item">
+                                    <div class="compliance-item-title">
+                                        <span class="compliance-status compliant">✓</span>
+                                        GDPR Compliance
+                                    </div>
+                                    <ul class="compliance-list">
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            Data minimization: 23 categories redacted
+                                        </li>
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            Legal basis: Article 6(1)(f) validated
+                                        </li>
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            Human oversight: GDPR Art. 22 enforced
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="compliance-item">
+                                    <div class="compliance-item-title">
+                                        <span class="compliance-status compliant">✓</span>
+                                        EU AI Act Compliance
+                                    </div>
+                                    <ul class="compliance-list">
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            High-risk system: Full obligations met
+                                        </li>
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            Risk management: Active monitoring
+                                        </li>
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            Explainability: SHAP-based system
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="compliance-item">
+                                    <div class="compliance-item-title">
+                                        <span class="compliance-status compliant">✓</span>
+                                        German AGG Compliance
+                                    </div>
+                                    <ul class="compliance-list">
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            Non-discrimination: Protected attributes excluded
+                                        </li>
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            Proxy audit: Quarterly verification
+                                        </li>
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            Works Council: Co-determination satisfied
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="compliance-item">
+                                    <div class="compliance-item-title">
+                                        <span class="compliance-status compliant">✓</span>
+                                        Ethical Framework
+                                    </div>
+                                    <ul class="compliance-list">
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            Care Ethics: Primary constraint active
+                                        </li>
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            Fairness: Equal opportunity maintained
+                                        </li>
+                                        <li class="compliance-list-item">
+                                            <span class="compliance-check pass">✓</span>
+                                            Transparency: Stakeholder communication
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">System Health Metrics</div>
+                            <div class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr);">
+                                <div class="metric-box">
+                                    <div class="metric-value">92.3%</div>
+                                    <div class="metric-label">Model Accuracy</div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-value">0.91</div>
+                                    <div class="metric-label">Selection Rate Parity</div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-value">2.1%</div>
+                                    <div class="metric-label">Proxy Risk</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Recent System Events</div>
+                            <table class="audit-table">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Event Type</th>
+                                        <th>Status</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="timestamp">2024-12-20 14:32:15</span></td>
+                                        <td>Assessment Completed</td>
+                                        <td><span class="badge success">Success</span></td>
+                                        <td>847 candidates processed</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="timestamp">2024-12-20 10:15:22</span></td>
+                                        <td>Fairness Audit</td>
+                                        <td><span class="badge success">Passed</span></td>
+                                        <td>All metrics within thresholds</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="timestamp">2024-12-19 18:00:00</span></td>
+                                        <td>Daily Monitoring</td>
+                                        <td><span class="badge success">Healthy</span></td>
+                                        <td>No anomalies detected</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CANDIDATES PAGE (SIMPLIFIED) -->
+            <div id="candidates-page" class="page">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <input type="text" placeholder="Search candidates...">
+                        </div>
+                        <button class="filter-button">Position: All</button>
+                        <button class="filter-button">Status: Pending</button>
+                    </div>
+                    <div>
+                        <button class="btn">New Assessment</button>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div class="detail-title">Candidate Management</div>
+                        <div class="detail-subtitle">Active screening and assessment records</div>
+                    </div>
+
+                    <div class="detail-content">
+                        <div class="section">
+                            <div class="section-title">Active Candidates (847)</div>
+                            <table class="audit-table">
+                                <thead>
+                                    <tr>
+                                        <th>Candidate</th>
+                                        <th>Position</th>
+                                        <th>Qualification Score</th>
+                                        <th>Fairness Index</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Alexandra Petrov</td>
+                                        <td>Senior Engineer</td>
+                                        <td><span class="badge success">84</span></td>
+                                        <td>96%</td>
+                                        <td><span class="badge">Under Review</span></td>
+                                        <td><a href="#" onclick="navigateToPage('fairness'); return false;" style="color: #0f3d7a; font-weight: 600; text-decoration: none;">View →</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Marcus Köhler</td>
+                                        <td>Senior Engineer</td>
+                                        <td><span class="badge warning">72</span></td>
+                                        <td>92%</td>
+                                        <td><span class="badge">Under Review</span></td>
+                                        <td><a href="#" onclick="navigateToPage('fairness'); return false;" style="color: #0f3d7a; font-weight: 600; text-decoration: none;">View →</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jasmine Wei</td>
+                                        <td>Senior Engineer</td>
+                                        <td><span class="badge success">79</span></td>
+                                        <td>94%</td>
+                                        <td><span class="badge">Under Review</span></td>
+                                        <td><a href="#" onclick="navigateToPage('fairness'); return false;" style="color: #0f3d7a; font-weight: 600; text-decoration: none;">View →</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thomas Müller</td>
+                                        <td>Senior Engineer</td>
+                                        <td><span class="badge critical">54</span></td>
+                                        <td>90%</td>
+                                        <td><span class="badge">Pending</span></td>
+                                        <td><a href="#" onclick="navigateToPage('fairness'); return false;" style="color: #0f3d7a; font-weight: 600; text-decoration: none;">View →</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAIRNESS MONITORING PAGE -->
+            <div id="fairness-page" class="page">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button class="filter-button">Period: Last 30 Days</button>
+                        <button class="filter-button">Demographic Groups: All</button>
+                    </div>
+                    <div>
+                        <button class="btn" onclick="showModal('fairness-report')">Generate Fairness Report</button>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div class="detail-title">Fairness Monitoring Dashboard</div>
+                        <div class="detail-subtitle">Real-time bias detection and fairness metrics across all demographic groups</div>
+                    </div>
+
+                    <div class="detail-content">
+                        <div class="section">
+                            <div class="section-title">Fairness Metrics</div>
+                            <div class="dashboard-grid" style="grid-template-columns: repeat(4, 1fr);">
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">Selection Rate Parity</div>
+                                    <div class="dashboard-card-value">0.91</div>
+                                    <div style="margin-top: 0.5rem;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 91%;"></div>
+                                        </div>
+                                        <div class="progress-text">Target: 0.80+</div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">TPR Parity</div>
+                                    <div class="dashboard-card-value">0.88</div>
+                                    <div style="margin-top: 0.5rem;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 88%;"></div>
+                                        </div>
+                                        <div class="progress-text">Target: 0.80+</div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">Proxy Detection Risk</div>
+                                    <div class="dashboard-card-value">2.1%</div>
+                                    <div style="margin-top: 0.5rem;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 21%;"></div>
+                                        </div>
+                                        <div class="progress-text">Threshold: 5.0%</div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">Demographic Parity</div>
+                                    <div class="dashboard-card-value">1.8%</div>
+                                    <div style="margin-top: 0.5rem;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 18%;"></div>
+                                        </div>
+                                        <div class="progress-text">Threshold: 10.0%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Demographic Group Analysis</div>
+                            <table class="audit-table">
+                                <thead>
+                                    <tr>
+                                        <th>Demographic Group</th>
+                                        <th>Sample Size</th>
+                                        <th>Selection Rate</th>
+                                        <th>True Positive Rate</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Non-EU Applicants</td>
+                                        <td>187</td>
+                                        <td>42.3%</td>
+                                        <td>89.1%</td>
+                                        <td><span class="badge success">Compliant</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Older Workers (55+)</td>
+                                        <td>156</td>
+                                        <td>40.8%</td>
+                                        <td>87.5%</td>
+                                        <td><span class="badge success">Compliant</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Career Gap (2+ years)</td>
+                                        <td>203</td>
+                                        <td>43.1%</td>
+                                        <td>88.9%</td>
+                                        <td><span class="badge success">Compliant</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Non-native German Speakers</td>
+                                        <td>164</td>
+                                        <td>41.5%</td>
+                                        <td>86.8%</td>
+                                        <td><span class="badge success">Compliant</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Overall Population</td>
+                                        <td>847</td>
+                                        <td>42.1%</td>
+                                        <td>88.2%</td>
+                                        <td><span class="badge success">Compliant</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Fairness Alerts</div>
+                            <div style="color: #6b7280; padding: 2rem; text-align: center; background-color: #fafbfc; border-radius: 5px; border: 1px dashed #d8dce6;">
+                                No fairness alerts. All metrics within acceptable thresholds.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RISK MANAGEMENT PAGE -->
+            <div id="risk-page" class="page">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button class="filter-button">Risk Level: All</button>
+                        <button class="filter-button">Status: Active</button>
+                    </div>
+                    <div>
+                        <button class="btn" onclick="showModal('risk-report')">Risk Assessment Report</button>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div class="detail-title">Risk Management Dashboard</div>
+                        <div class="detail-subtitle">Identified risks, mitigations, and ongoing monitoring</div>
+                    </div>
+
+                    <div class="detail-content">
+                        <div class="section">
+                            <div class="section-title">Risk Overview</div>
+                            <div class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr);">
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">Critical Risks</div>
+                                    <div class="dashboard-card-value">0</div>
+                                    <div class="dashboard-card-change">All mitigated</div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">High Risks</div>
+                                    <div class="dashboard-card-value">2</div>
+                                    <div class="dashboard-card-change">Under monitoring</div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">Risk Mitigation Rate</div>
+                                    <div class="dashboard-card-value">98.3%</div>
+                                    <div class="dashboard-card-change">Target: 95%+</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Active Risks</div>
+                            
+                            <div class="risk-item">
+                                <div class="risk-item-title">Disparate Impact Risk</div>
+                                <div class="risk-item-description">Potential systematic bias affecting vulnerable demographic groups in hiring outcomes</div>
+                                <div class="risk-item-mitigation">Mitigation: Fairness constraints enforced, quarterly audits scheduled, proxy detection active</div>
+                            </div>
+
+                            <div class="risk-item">
+                                <div class="risk-item-title">Human Oversight Degradation</div>
+                                <div class="risk-item-description">HR reviewers may experience automation bias or insufficient engagement with explanations</div>
+                                <div class="risk-item-mitigation">Mitigation: Mandatory justification workflows, override tracking, staff training programs</div>
+                            </div>
+
+                            <div class="risk-item warning">
+                                <div class="risk-item-title">Regulatory Evolution Risk</div>
+                                <div class="risk-item-description">EU AI Act harmonized standards and implementing acts still in development phase</div>
+                                <div class="risk-item-mitigation">Mitigation: Compliance-by-design approach, regulatory monitoring, external legal review quarterly</div>
+                            </div>
+
+                            <div class="risk-item">
+                                <div class="risk-item-title">Function Creep Risk</div>
+                                <div class="risk-item-description">System outputs misused for purposes outside intended recruitment scope</div>
+                                <div class="risk-item-mitigation">Mitigation: Purpose limitation technical controls, DPA enforcement, usage monitoring, alerts</div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Risk Monitoring Schedule</div>
+                            <table class="audit-table">
+                                <thead>
+                                    <tr>
+                                        <th>Risk Category</th>
+                                        <th>Monitoring Frequency</th>
+                                        <th>Last Assessment</th>
+                                        <th>Next Due</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Fairness & Bias</td>
+                                        <td>Daily (automated) + Monthly (manual)</td>
+                                        <td><span class="timestamp">2024-12-20</span></td>
+                                        <td><span class="timestamp">2025-01-15</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Human Oversight</td>
+                                        <td>Weekly review of override patterns</td>
+                                        <td><span class="timestamp">2024-12-19</span></td>
+                                        <td><span class="timestamp">2024-12-26</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Compliance</td>
+                                        <td>Quarterly formal assessment</td>
+                                        <td><span class="timestamp">2024-12-01</span></td>
+                                        <td><span class="timestamp">2025-03-01</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Security & Infrastructure</td>
+                                        <td>Continuous + Annual audit</td>
+                                        <td><span class="timestamp">2024-11-28</span></td>
+                                        <td><span class="timestamp">2025-11-28</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODEL MANAGEMENT PAGE -->
+            <div id="model-page" class="page">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button class="filter-button">Model Status: All</button>
+                    </div>
+                    <div>
+                        <button class="btn">Model Performance Report</button>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div class="detail-title">Model Management & Monitoring</div>
+                        <div class="detail-subtitle">Current model performance, versioning, and update history</div>
+                    </div>
+
+                    <div class="detail-content">
+                        <div class="section">
+                            <div class="section-title">Current Production Model</div>
+                            <div class="compliance-item">
+                                <div class="compliance-item-title">
+                                    <span class="compliance-status compliant">✓</span>
+                                    FairSight-v2.3.1 (Production)
+                                </div>
+                                <ul class="compliance-list">
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Deployed: 2024-11-15 | Status: Active & Stable
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Model Type: Multilingual transformer (350M parameters)
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Accuracy: 92.3% | Fairness Score: 94.2%
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Last Update: 2024-12-01 | Next Scheduled: 2025-01-30
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Model Performance Metrics</div>
+                            <div class="dashboard-grid" style="grid-template-columns: repeat(4, 1fr);">
+                                <div class="metric-box">
+                                    <div class="metric-value">92.3%</div>
+                                    <div class="metric-label">Accuracy</div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-value">94.2%</div>
+                                    <div class="metric-label">Fairness Index</div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-value">2.3ms</div>
+                                    <div class="metric-label">Inference Time</div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-value">0.02%</div>
+                                    <div class="metric-label">Error Rate</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Model Version History</div>
+                            <table class="audit-table">
+                                <thead>
+                                    <tr>
+                                        <th>Version</th>
+                                        <th>Deployed</th>
+                                        <th>Status</th>
+                                        <th>Accuracy</th>
+                                        <th>Fairness</th>
+                                        <th>Changes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>v2.3.1</td>
+                                        <td><span class="timestamp">2024-11-15</span></td>
+                                        <td><span class="badge success">Production</span></td>
+                                        <td>92.3%</td>
+                                        <td>94.2%</td>
+                                        <td>Fairness threshold update</td>
+                                    </tr>
+                                    <tr>
+                                        <td>v2.3.0</td>
+                                        <td><span class="timestamp">2024-10-22</span></td>
+                                        <td><span class="badge info">Archived</span></td>
+                                        <td>91.8%</td>
+                                        <td>93.5%</td>
+                                        <td>Feature rebalancing</td>
+                                    </tr>
+                                    <tr>
+                                        <td>v2.2.5</td>
+                                        <td><span class="timestamp">2024-09-10</span></td>
+                                        <td><span class="badge info">Archived</span></td>
+                                        <td>90.2%</td>
+                                        <td>92.1%</td>
+                                        <td>Redaction pipeline update</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Data Drift & Quality Monitoring</div>
+                            <div class="dashboard-grid" style="grid-template-columns: repeat(2, 1fr);">
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">Data Drift Detection</div>
+                                    <div style="margin-top: 1rem;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 12%;"></div>
+                                        </div>
+                                        <div class="progress-text" style="margin-top: 0.5rem;">Detected drift: 1.2% | Alert threshold: 5.0%</div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">Input Data Quality</div>
+                                    <div style="margin-top: 1rem;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 96%;"></div>
+                                        </div>
+                                        <div class="progress-text" style="margin-top: 0.5rem;">Quality score: 96% | Completeness: 98.5%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STAKEHOLDERS PAGE -->
+            <div id="stakeholders-page" class="page">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                    </div>
+                    <div>
+                        <button class="btn">Add Stakeholder</button>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div class="detail-title">Stakeholder Management</div>
+                        <div class="detail-subtitle">Governance roles, responsibilities, and engagement</div>
+                    </div>
+
+                    <div class="detail-content">
+                        <div class="section">
+                            <div class="section-title">System Governance Structure</div>
+                            
+                            <div class="stakeholder-card">
+                                <div class="stakeholder-role">Chief Data Officer (CDO)</div>
+                                <div class="stakeholder-responsibilities">
+                                    <strong>Responsibility:</strong> Primary system owner and technical authority<br>
+                                    <strong>Key Duties:</strong> Technical integrity oversight, model updates, fairness monitoring, architecture governance<br>
+                                    <strong>Current:</strong> Dr. Michael Schmidt
+                                </div>
+                            </div>
+
+                            <div class="stakeholder-card">
+                                <div class="stakeholder-role">Data Protection Officer (DPO)</div>
+                                <div class="stakeholder-responsibilities">
+                                    <strong>Responsibility:</strong> GDPR compliance and data governance<br>
+                                    <strong>Key Duties:</strong> DPIA review, legal basis validation, rights protection, incident response<br>
+                                    <strong>Current:</strong> Dr. Angela Weber
+                                </div>
+                            </div>
+
+                            <div class="stakeholder-card">
+                                <div class="stakeholder-role">Chief Ethics Advisor (CIBIO)</div>
+                                <div class="stakeholder-responsibilities">
+                                    <strong>Responsibility:</strong> Ethics governance and Care Ethics enforcement<br>
+                                    <strong>Key Duties:</strong> Fairness constraint oversight, vulnerable group protection, stakeholder engagement<br>
+                                    <strong>Current:</strong> Dr. Helena Bergström
+                                </div>
+                            </div>
+
+                            <div class="stakeholder-card">
+                                <div class="stakeholder-role">Legal Counsel</div>
+                                <div class="stakeholder-responsibilities">
+                                    <strong>Responsibility:</strong> EU AI Act and AGG compliance<br>
+                                    <strong>Key Duties:</strong> Regulatory alignment, conformity assessment, legal documentation<br>
+                                    <strong>Current:</strong> Jürgen Hoffmann
+                                </div>
+                            </div>
+
+                            <div class="stakeholder-card">
+                                <div class="stakeholder-role">HR Operations Lead</div>
+                                <div class="stakeholder-responsibilities">
+                                    <strong>Responsibility:</strong> Daily system operation and HR user oversight<br>
+                                    <strong>Key Duties:</strong> Human-in-the-Loop decision-making, justification protocols, user training<br>
+                                    <strong>Current:</strong> Sarah Mueller
+                                </div>
+                            </div>
+
+                            <div class="stakeholder-card">
+                                <div class="stakeholder-role">Works Council (Betriebsrat)</div>
+                                <div class="stakeholder-responsibilities">
+                                    <strong>Responsibility:</strong> Employee rights protection under German co-determination law<br>
+                                    <strong>Key Duties:</strong> System approval, fairness review, worker rights advocacy<br>
+                                    <strong>Current:</strong> Represented by 5 council members
+                                </div>
+                            </div>
+
+                            <div class="stakeholder-card">
+                                <div class="stakeholder-role">External Ethics Board</div>
+                                <div class="stakeholder-responsibilities">
+                                    <strong>Responsibility:</strong> Independent ethical oversight and stakeholder representation<br>
+                                    <strong>Key Duties:</strong> Fairness audits, community impact review, bias detection verification<br>
+                                    <strong>Members:</strong> AI ethics experts, civil rights advocates, labor representatives
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Responsible AI Council (Decision-Making Body)</div>
+                            <div class="compliance-item">
+                                <div class="compliance-item-title">
+                                    <span class="compliance-status compliant">✓</span>
+                                    Council Composition & Authority
+                                </div>
+                                <ul class="compliance-list">
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Members: CDO, Legal Counsel, DPO, Ethics Advisor, Chief Innovation Officers
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Meetings: Weekly operational + Monthly strategic
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Authority: All high-impact decisions require unanimous council approval
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Escalation: Disputes defaulted to most rights-protective option
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMPLIANCE PAGE -->
+            <div id="compliance-page" class="page">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button class="filter-button">Framework: All</button>
+                        <button class="filter-button">Status: Active</button>
+                    </div>
+                    <div>
+                        <button class="btn" onclick="showModal('compliance-report')">Full Compliance Report</button>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div class="detail-title">Compliance Dashboard</div>
+                        <div class="detail-subtitle">Regulatory framework status and obligation tracking</div>
+                    </div>
+
+                    <div class="detail-content">
+                        <div class="section">
+                            <div class="section-title">Compliance Status by Framework</div>
+                            <div class="dashboard-grid" style="grid-template-columns: repeat(2, 1fr);">
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">GDPR Compliance</div>
+                                    <div class="dashboard-card-value">100%</div>
+                                    <div style="margin-top: 0.5rem;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">EU AI Act (High-Risk)</div>
+                                    <div class="dashboard-card-value">100%</div>
+                                    <div style="margin-top: 0.5rem;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">German AGG</div>
+                                    <div class="dashboard-card-value">100%</div>
+                                    <div style="margin-top: 0.5rem;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card">
+                                    <div class="dashboard-card-label">Care Ethics Framework</div>
+                                    <div class="dashboard-card-value">100%</div>
+                                    <div style="margin-top: 0.5rem;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Outstanding Compliance Obligations</div>
+                            <table class="audit-table">
+                                <thead>
+                                    <tr>
+                                        <th>Obligation</th>
+                                        <th>Framework</th>
+                                        <th>Status</th>
+                                        <th>Due Date</th>
+                                        <th>Responsible Party</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Quarterly Fairness Audit</td>
+                                        <td>EU AI Act</td>
+                                        <td><span class="badge info">Scheduled</span></td>
+                                        <td><span class="timestamp">2025-01-15</span></td>
+                                        <td>Ethics Board</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Annual Security Audit</td>
+                                        <td>GDPR / ISO 27001</td>
+                                        <td><span class="badge success">Completed</span></td>
+                                        <td><span class="timestamp">2024-11-28</span></td>
+                                        <td>External Auditor</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Regulatory Sandbox Participation</td>
+                                        <td>EU AI Act</td>
+                                        <td><span class="badge">In Progress</span></td>
+                                        <td><span class="timestamp">2025-02-28</span></td>
+                                        <td>Legal Counsel</td>
+                                    </tr>
+                                    <tr>
+                                        <td>CE Marking Assessment</td>
+                                        <td>EU AI Act</td>
+                                        <td><span class="badge">Planned</span></td>
+                                        <td><span class="timestamp">2025-06-30</span></td>
+                                        <td>CDO + Legal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Works Council Review</td>
+                                        <td>German Co-Determination</td>
+                                        <td><span class="badge success">Completed</span></td>
+                                        <td><span class="timestamp">2024-12-10</span></td>
+                                        <td>Works Council</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AUDITS PAGE -->
+            <div id="audits-page" class="page">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button class="filter-button">Period: Last 30 Days</button>
+                        <button class="filter-button">Event Type: All</button>
+                    </div>
+                    <div>
+                        <button class="btn">Download Audit Trail</button>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div class="detail-title">System Audit Trail</div>
+                        <div class="detail-subtitle">Complete record of system activities and decision documentation</div>
+                    </div>
+
+                    <div class="detail-content">
+                        <div class="section">
+                            <div class="section-title">Recent Events (Last 20)</div>
+                            <table class="audit-table">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Event Type</th>
+                                        <th>User / System</th>
+                                        <th>Status</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="timestamp">2024-12-20 14:32:15</span></td>
+                                        <td>Assessment Decision</td>
+                                        <td>Sarah Mueller</td>
+                                        <td><span class="badge success">Accepted</span></td>
+                                        <td>Candidate: Alexandra Petrov | Score: 84</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="timestamp">2024-12-20 14:28:42</span></td>
+                                        <td>SHAP Explanation</td>
+                                        <td>System</td>
+                                        <td><span class="badge success">Generated</span></td>
+                                        <td>Algorithm: XAI pipeline executed</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="timestamp">2024-12-20 14:27:08</span></td>
+                                        <td>Fairness Audit</td>
+                                        <td>System</td>
+                                        <td><span class="badge success">Passed</span></td>
+                                        <td>Metrics: All within thresholds</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="timestamp">2024-12-20 14:25:31</span></td>
+                                        <td>Model Inference</td>
+                                        <td>System</td>
+                                        <td><span class="badge success">Completed</span></td>
+                                        <td>Latency: 2.3ms | Score: 84</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="timestamp">2024-12-20 14:24:55</span></td>
+                                        <td>Data Redaction</td>
+                                        <td>System</td>
+                                        <td><span class="badge success">Executed</span></td>
+                                        <td>Categories redacted: 23 | Data integrity: 100%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DOCUMENTATION PAGE -->
+            <div id="documentation-page" class="page">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button class="filter-button">Category: All</button>
+                    </div>
+                    <div>
+                        <button class="btn">Download All Docs</button>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div class="detail-title">System Documentation & Training</div>
+                        <div class="detail-subtitle">Technical documentation, user guides, and compliance materials</div>
+                    </div>
+
+                    <div class="detail-content">
+                        <div class="section">
+                            <div class="section-title">Technical Documentation</div>
+                            
+                            <div class="doc-section">
+                                <div class="doc-section-title">System Architecture & Design</div>
+                                <ul class="doc-list">
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📄</span>
+                                        FairSight Technical Architecture Document (v2.3)
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📄</span>
+                                        Model Card & Performance Specifications
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📄</span>
+                                        Data Pipeline & Redaction Specifications (23 categories)
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📄</span>
+                                        API Documentation & Integration Guide
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="doc-section">
+                                <div class="doc-section-title">Compliance & Legal Documentation</div>
+                                <ul class="doc-list">
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">⚖️</span>
+                                        GDPR Compliance Report & DPIA
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">⚖️</span>
+                                        EU AI Act Conformity Assessment Package
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">⚖️</span>
+                                        German AGG (Anti-Discrimination) Compliance Report
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">⚖️</span>
+                                        Data Processing Agreements & Legal Basis Justification
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">⚖️</span>
+                                        Risk Management System & Mitigation Strategies
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="doc-section">
+                                <div class="doc-section-title">User Guides & Training Materials</div>
+                                <ul class="doc-list">
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📚</span>
+                                        HR User Manual & System Operation Guide
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📚</span>
+                                        Human-in-the-Loop Protocol & Justification Workflows
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📚</span>
+                                        Fairness & Bias Awareness Training for HR Staff
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📚</span>
+                                        Candidate Communication Templates & Disclosure Materials
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📚</span>
+                                        Works Council Information & Co-Determination Guide
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="doc-section">
+                                <div class="doc-section-title">Ethical & Governance Documentation</div>
+                                <ul class="doc-list">
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">🏛️</span>
+                                        Care Ethics Framework & Implementation Guidelines
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">🏛️</span>
+                                        Responsible AI Council Charter & Decision Protocols
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">🏛️</span>
+                                        Fairness Metrics & Threshold Specifications
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">🏛️</span>
+                                        Vulnerable Groups Identification & Protection Strategy
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">🏛️</span>
+                                        External Ethics Board Charter & Review Procedures
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="doc-section">
+                                <div class="doc-section-title">Monitoring & Audit Documentation</div>
+                                <ul class="doc-list">
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📊</span>
+                                        Fairness Audit Reports (Quarterly)
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📊</span>
+                                        Model Performance & Drift Monitoring Logs
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📊</span>
+                                        Incident Reports & Resolution Tracking
+                                    </li>
+                                    <li class="doc-list-item">
+                                        <span class="doc-icon">📊</span>
+                                        System Audit Trail & Change Management Log
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS PAGE -->
+            <div id="settings-page" class="page">
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                    </div>
+                    <div>
+                        <button class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div class="detail-title">System Settings & Configuration</div>
+                        <div class="detail-subtitle">Governance configuration, thresholds, and monitoring parameters</div>
+                    </div>
+
+                    <div class="detail-content">
+                        <div class="section">
+                            <div class="section-title">Fairness Configuration</div>
+                            
+                            <div class="compliance-item">
+                                <div class="compliance-item-title">Fairness Thresholds</div>
+                                <div style="padding: 1rem 0; font-size: 0.9rem;">
+                                    <div style="margin-bottom: 1.5rem;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span style="color: #2c3e50; font-weight: 600;">Selection Rate Parity (Minimum)</span>
+                                            <span style="color: #0f3d7a; font-weight: 700;">0.80</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 80%;"></div>
+                                        </div>
+                                        <div class="progress-text" style="margin-top: 0.5rem;">Ensures proportional selection across demographic groups</div>
+                                    </div>
+                                    <div style="margin-bottom: 1.5rem;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span style="color: #2c3e50; font-weight: 600;">True Positive Rate Parity (Minimum)</span>
+                                            <span style="color: #0f3d7a; font-weight: 700;">0.80</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 80%;"></div>
+                                        </div>
+                                        <div class="progress-text" style="margin-top: 0.5rem;">Equal accuracy across groups for qualified candidates</div>
+                                    </div>
+                                    <div style="margin-bottom: 1.5rem;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span style="color: #2c3e50; font-weight: 600;">Proxy Detection Alert Threshold</span>
+                                            <span style="color: #0f3d7a; font-weight: 700;">5.0%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 50%;"></div>
+                                        </div>
+                                        <div class="progress-text" style="margin-top: 0.5rem;">Triggers review when proxy correlation detected</div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span style="color: #2c3e50; font-weight: 600;">Demographic Disparity Threshold</span>
+                                            <span style="color: #0f3d7a; font-weight: 700;">10.0%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 100%;"></div>
+                                        </div>
+                                        <div class="progress-text" style="margin-top: 0.5rem;">Maximum acceptable disparity between demographic groups</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Monitoring Schedule</div>
+                            
+                            <div class="compliance-item">
+                                <div class="compliance-item-title">Active Monitoring Configuration</div>
+                                <ul class="compliance-list">
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Daily: Automated fairness diagnostics & system health checks
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Weekly: Override pattern analysis & user engagement metrics
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Monthly: Comprehensive bias audit & performance review
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Quarterly: External ethics board review & formal assessment
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Annual: Security audit & regulatory compliance review
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Governance Structure</div>
+                            
+                            <div class="compliance-item">
+                                <div class="compliance-item-title">Decision-Making Authority</div>
+                                <ul class="compliance-list">
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Responsible AI Council: All high-impact updates require approval
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        CDO Authority: Day-to-day technical operations & parameter adjustments
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Legal Review: All deployment & feature changes reviewed for compliance
+                                    </li>
+                                    <li class="compliance-list-item">
+                                        <span class="compliance-check pass">✓</span>
+                                        Ethics Approval: Fairness implications evaluated pre-deployment
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title" id="modal-title">Confirm Action</div>
+            <div class="modal-text" id="modal-text">Are you sure?</div>
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="closeModal()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function navigateToPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+            
+            const pageId = page + '-page';
+            const pageElement = document.getElementById(pageId);
+            if (pageElement) {
+                pageElement.classList.add('active');
+            }
+            
+            document.querySelector(`[onclick="navigateToPage('${page}')"]`)?.classList.add('active');
+        }
+
+        function showModal(type) {
+            const modal = document.getElementById('modal');
+            const titleEl = document.getElementById('modal-title');
+            const textEl = document.getElementById('modal-text');
+            
+            const messages = {
+                export: { title: 'Export Dashboard', text: 'Generate and download a comprehensive PDF report of the platform overview and performance metrics.' },
+                'fairness-report': { title: 'Generate Fairness Report', text: 'Generate a detailed fairness audit report covering all demographic groups and compliance requirements.' },
+                'risk-report': { title: 'Risk Assessment Report', text: 'Generate a comprehensive risk management report with all identified risks and mitigation strategies.' },
+                'compliance-report': { title: 'Full Compliance Report', text: 'Generate a complete compliance documentation package for regulatory submission and stakeholder review.' }
+            };
+            
+            if (messages[type]) {
+                titleEl.textContent = messages[type].title;
+                textEl.textContent = messages[type].text;
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        document.getElementById('modal')?.addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+</body>
+</html>
